@@ -13,13 +13,13 @@ it doesn't already exists.
 
 Errors messages are send to a given e-mail address.
 
-### Required packages
+### Required packages (might be included in python default installation)
 
 * logging
 * requests
 * json
 * smtplib
-* configparser
+* ConfigParser
 
 ### Configuration
 
