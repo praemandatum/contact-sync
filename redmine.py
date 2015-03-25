@@ -133,9 +133,9 @@ def processContact(contact, redmine_contacts):
 	## Check request status and notify on errors
 	if (r.status_code != 201 and r.status_code != 200):
 		if r.status_code == 422:
-			sendErrorMailAndLog(settings.adminMailAddress, "Unprocessable Entity: " + r.text, False)
+			sendErrorMailAndLog(settings.adminMailAddress, "Unprocessable Entity: " + getJsonPayloadAddContact(contact, None) + "\n" + r.text, False)
 		else:
-			sendErrorMailAndLog(settings.adminMailAddress, "Could not create or update contact: " + r.text, False)
+			sendErrorMailAndLog(settings.adminMailAddress, "Could not create or update contact: " + getJsonPayloadAddContact(contact, None) + "\n" + r.text, False)
 
 def processCompany(contact):
 	## Process company fields from contacts
@@ -157,9 +157,9 @@ def processCompany(contact):
 			## Check request status and notify on errors
 			if (r.status_code != 201 and r.status_code != 200):
 				if r.status_code == 422:
-					sendErrorMailAndLog(settings.adminMailAddress, "Unprocessable Entity: " + r.text, False)
+					sendErrorMailAndLog(settings.adminMailAddress, "Unprocessable Entity: " + getJsonPayloadAddCompany(contact[13]) + "\n" + r.text, False)
 				else:
-					sendErrorMailAndLog(settings.adminMailAddress, "Could not create or update contact: " + r.text, False)
+					sendErrorMailAndLog(settings.adminMailAddress, "Could not create or update contact: " + getJsonPayloadAddCompany(contact[13]) + "\n" + r.text, False)
 
 def sanitizeContact(contact):
 	## Sanitize OX output
