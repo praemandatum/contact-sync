@@ -1,21 +1,26 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import logging, smtplib, sys, settings
+import logging
+import smtplib
+import sys
 
-def sendErrorMailAndLog(recipient, errorMessage, exitOnError):
-	logging.error(errorMessage)
-	try:
-		smtp = smtplib.SMTP(settings.smtpAddress, settings.smtpPort)
-		smtp.starttls()
-		smtp.login(settings.smtpUser, settings.smtpPassword)
-		message = ("From: OX Sync <" + settings.smtpSender + ">\n" +
-					"To: <" + recipient + ">\n" +
-					"Subject: OX Sync error!" + "\n" + 
-					errorMessage)
-		smtp.sendmail(settings.smtpSender, recipient, message)
-	except:
-		logging.error("Could not send mail!")
+import settings
 
-	if exitOnError == True:
-		sys.exit(1)
+
+def send_error_mail_and_log(recipient, error_message, exit_on_error):
+    logging.error(error_message)
+    try:
+        smtp = smtplib.SMTP(settings.smtp_address, settings.smtp_port)
+        smtp.starttls()
+        smtp.login(settings.smtp_user, settings.smtp_password)
+        message = ("From: OX Sync <" + settings.smtp_sender + ">\n" +
+                   "To: <" + recipient + ">\n" +
+                   "Subject: OX Sync error!" + "\n" +
+                   error_message)
+        smtp.sendmail(settings.smtp_sender, recipient, message)
+    except:
+        logging.error("Could not send mail!")
+
+    if exit_on_error:
+        sys.exit(1)

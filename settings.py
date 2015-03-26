@@ -3,77 +3,99 @@
 
 import ConfigParser
 
-def loadSettings(filename):
-	config = ConfigParser.ConfigParser()
-	config.sections()
-	config.read(filename)
+loglevel = None
+smtp_address = None
+smtp_port = None
+smtp_user = None
+smtp_password = None
+smtp_sender = None
+admin_mail_address = None
+ox_login_name = None
+ox_login_pass = None
+ox_login_url = None
+ox_contacts_url = None
+ox_contacts_folder = None
+ox_contacts_columns = None
+redmine_user = None
+redmine_password = None
+redmine_project = None
+redmine_url_contacts = None
+redmine_url_contacts_update = None
+name_ox_uid = None
+uid_field_id = None
 
-	## Global
-	global loglevel
-	loglevel = config.getint('GLOBAL', 'Loglevel')
 
-	## Mail
-	global smtpAddress
-	smtpAddress = config.get('MAIL', 'Server')
+def load_settings(filename):
+    config = ConfigParser.ConfigParser()
+    config.sections()
+    config.read(filename)
 
-	global smtpPort
-	smtpPort = config.getint('MAIL', 'Port')
+    # Global
+    global loglevel
+    loglevel = config.getint('GLOBAL', 'Loglevel')
 
-	global smtpUser
-	smtpUser = config.get('MAIL', 'User')
+    # Mail
+    global smtp_address
+    smtp_address = config.get('MAIL', 'Server')
 
-	global smtpPassword
-	smtpPassword = config.get('MAIL', 'Password')
+    global smtp_port
+    smtp_port = config.getint('MAIL', 'Port')
 
-	global smtpSender
-	smtpSender = config.get('MAIL', 'Sender')
+    global smtp_user
+    smtp_user = config.get('MAIL', 'User')
 
-	global adminMailAddress
-	adminMailAddress = config.get('MAIL', 'AdminMail')
+    global smtp_password
+    smtp_password = config.get('MAIL', 'Password')
 
-	## OX
-	global ox_login_name
-	ox_login_name = config.get('OX', 'User')
+    global smtp_sender
+    smtp_sender = config.get('MAIL', 'Sender')
 
-	global ox_login_pass
-	ox_login_pass = config.get('OX', 'Password')
+    global admin_mail_address
+    admin_mail_address = config.get('MAIL', 'AdminMail')
 
-	global ox_login_url
-	ox_login_url = config.get('OX', 'Login_URL')
+    # OX
+    global ox_login_name
+    ox_login_name = config.get('OX', 'User')
 
-	global ox_contacts_url
-	ox_contacts_url = config.get('OX', 'Contacts_URL')
+    global ox_login_pass
+    ox_login_pass = config.get('OX', 'Password')
 
-	global ox_contacts_folder
-	ox_contacts_folder = config.get('OX', 'Contacts_folder')
+    global ox_login_url
+    ox_login_url = config.get('OX', 'Login_URL')
 
-	## OX contacts colums
-	global ox_contacts_columns
-	ox_contacts_columns = ""
-	for key in config.items('OX_CONTACTS_COLUMNS'):
-		ox_contacts_columns += key[1]
-		ox_contacts_columns += ","
+    global ox_contacts_url
+    ox_contacts_url = config.get('OX', 'Contacts_URL')
 
-	## Redmine
-	global redmine_user
-	redmine_user = config.get('REDMINE', 'User')
+    global ox_contacts_folder
+    ox_contacts_folder = config.get('OX', 'Contacts_folder')
 
-	global redmine_password
-	redmine_password = config.get('REDMINE', 'Password')
+    # OX contacts colums
+    global ox_contacts_columns
+    ox_contacts_columns = ""
+    for key in config.items('OX_CONTACTS_COLUMNS'):
+        ox_contacts_columns += key[1]
+        ox_contacts_columns += ","
 
-	global redmine_project
-	redmine_project = config.get('REDMINE', 'Project')
+    # Redmine
+    global redmine_user
+    redmine_user = config.get('REDMINE', 'User')
 
-	global redmine_url_contacts
-	redmine_url_contacts = config.get('REDMINE', 'Contacts_URL')
+    global redmine_password
+    redmine_password = config.get('REDMINE', 'Password')
 
-	global redmine_url_contacts_update
-	redmine_url_contacts_update = config.get('REDMINE', 'Contacts_update_URL')
+    global redmine_project
+    redmine_project = config.get('REDMINE', 'Project')
 
-	global name_ox_uid
-	name_ox_uid = config.get('REDMINE', 'Name_OX_UID')
+    global redmine_url_contacts
+    redmine_url_contacts = config.get('REDMINE', 'Contacts_URL')
 
-	global uid_field_id
-	uid_field_id = config.get('REDMINE', 'UID_field_id')
+    global redmine_url_contacts_update
+    redmine_url_contacts_update = config.get('REDMINE', 'Contacts_update_URL')
+
+    global name_ox_uid
+    name_ox_uid = config.get('REDMINE', 'Name_OX_UID')
+
+    global uid_field_id
+    uid_field_id = config.get('REDMINE', 'UID_field_id')
 
 

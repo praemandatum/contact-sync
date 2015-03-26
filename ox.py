@@ -1,31 +1,37 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import requests, json, settings
-from mail import sendErrorMailAndLog
+import requests
+import json
 
-## Get all Openxchange contacts
-def getOXContacts():
-	token = getToken(settings.ox_login_name, settings.ox_login_pass)
+import settings
+from mail import send_error_mail_and_log
 
-	payload = {'session': str(token[0].get("session", "")), 'folder': settings.ox_contacts_folder, 'columns': settings.ox_contacts_columns}
-	r = requests.get(settings.ox_contacts_url, params=payload, cookies=token[1]);
 
-	if r.status_code != 200:
-		sendErrorMailAndLog(settings.adminMailAddress, "Could not get OX contacts!\n" + r.text, True)
+# Get all OpenXChange contacts
+def get_ox_contacts():
+    token = get_token(settings.ox_login_name, settings.ox_login_pass)
 
-	return json.loads(r.text)
+    payload = {'session': str(token[0].get("session", "")), 'folder': settings.ox_contacts_folder,
+               'columns': settings.ox_contacts_columns}
+    r = requests.get(settings.ox_contacts_url, params=payload, cookies=token[1])
 
-## Request Openxchange token and cookie
-def getToken(login_name, login_password):
-	payload = {'name': login_name, 'password': login_password}
-	r = requests.post(settings.ox_login_url, params=payload)
+    if r.status_code != 200:
+        send_error_mail_and_log(settings.admin_mail_address, "Could not get OX contacts!\n" + r.text, True)
 
-	if r.status_code != 200:
-		sendErrorMailAndLog(settings.adminMailAddress, "Could not get OX login token!", True)
+    return json.loads(r.text)
 
-	ox_session = json.loads(r.text)
-	if ox_session.get("session", "") == "":
-		sendErrorMailAndLog(settings.adminMailAddress, "Didn't receive session!\n" + r.text, True)
-	ox_cookie = r.cookies
-	return (ox_session, ox_cookie)
+
+# Request OpenXChange token and cookie
+def get_token(login_name, login_password):
+    payload = {'name': login_name, 'password': login_password}
+    r = requests.post(settings.ox_login_url, params=payload)
+
+    if r.status_code != 200:
+        send_error_mail_and_log(settings.admin_mail_address, "Could not get OX login token!", True)
+
+    ox_session = json.loads(r.text)
+    if ox_session.get("session", "") == "":
+        send_error_mail_and_log(settings.admin_mail_address, "Didn't receive session!\n" + r.text, True)
+    ox_cookie = r.cookies
+    return ox_session, ox_cookie
