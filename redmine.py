@@ -170,6 +170,10 @@ def sanitizeContact(contact):
 	## Redmine disallows empty first name -> Rewrite empty names
 	if contact[1] == "":
 		contact[1] = "-"
+
+	## Replace country code "Deutschland" with "DE"
+	if contact[12] == "Deutschland":
+		contact[12] = "DE"
 	return contact
 
 ## Write contacts to redmine
