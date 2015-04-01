@@ -12,7 +12,6 @@ smtp_sender = None
 admin_mail_address = None
 ox_login_name = None
 ox_login_pass = None
-ox_base_url = None
 ox_login_url = None
 ox_contacts_url = None
 ox_contacts_folder = None
@@ -60,9 +59,6 @@ def load_settings(filename):
 
     global ox_login_pass
     ox_login_pass = config.get('OX', 'Password')
-
-    global ox_base_url
-    ox_base_url = config.get('OX', 'Base_URL')
 
     global ox_login_url
     ox_login_url = config.get('OX', 'Login_URL')
