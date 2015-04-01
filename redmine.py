@@ -76,6 +76,7 @@ def get_json_payload_add_contact(ox_contact, redmine_contact):
             "background": get_background(ox_contact),
             "job_title": ox_contact[17],
             "tag_list": get_combined_tag_list(ox_contact, redmine_contact),
+            "website": get_ox_contact_website(ox_contact),
             "custom_fields": [{"value": ox_contact[0], "name": settings.name_ox_uid, "id": settings.uid_field_id}]
         }
     }
@@ -107,6 +108,12 @@ def get_combined_tag_list(ox_contact, redmine_contact):
             tags += ","
             tags += redmine_tag
     return tags
+
+
+def get_ox_contact_website(ox_contact):
+    website = 'https://{0}/appsuite/#!&app=io.ox/contacts&folder={1}&id={1}.{2}'.format(
+        settings.ox_base_url, str(settings.ox_contacts_folder), str(ox_contact[20]))
+    return website
 
 
 def get_json_payload_add_company(company_name):
