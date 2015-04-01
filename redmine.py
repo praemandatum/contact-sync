@@ -99,6 +99,9 @@ def get_background(ox_contact):
 
 def get_combined_tag_list(ox_contact, redmine_contact):
     tags = ox_contact[18]
+    if ox_contact[19] is not None:
+        tags += ","
+        tags += ox_contact[19]
     if redmine_contact is not None:
         for redmine_tag in redmine_contact['tag_list']:
             tags += ","
