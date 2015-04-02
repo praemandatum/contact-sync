@@ -13,6 +13,7 @@ admin_mail_address = None
 ox_login_name = None
 ox_login_pass = None
 ox_login_url = None
+ox_base_url = None
 ox_contacts_url = None
 ox_contacts_folder = None
 ox_contacts_columns = None
@@ -22,7 +23,9 @@ redmine_project = None
 redmine_url_contacts = None
 redmine_url_contacts_update = None
 name_ox_uid = None
+name_ox_website = None
 uid_field_id = None
+ox_website_field_id = None
 
 
 def load_settings(filename):
@@ -63,6 +66,9 @@ def load_settings(filename):
     global ox_login_url
     ox_login_url = config.get('OX', 'Login_URL')
 
+    global ox_base_url
+    ox_base_url = config.get('OX', 'Base_URL')
+
     global ox_contacts_url
     ox_contacts_url = config.get('OX', 'Contacts_URL')
 
@@ -98,4 +104,9 @@ def load_settings(filename):
     global uid_field_id
     uid_field_id = config.get('REDMINE', 'UID_field_id')
 
+    global name_ox_website
+    name_ox_website = config.get('REDMINE', 'Name_OX_Website')
+
+    global ox_website_field_id
+    ox_website_field_id = config.get('REDMINE', 'OX_Website_field_id')
 
