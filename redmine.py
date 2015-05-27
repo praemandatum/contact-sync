@@ -187,15 +187,15 @@ def process_company(contact):
         # Check if company already exists
         company_found = False
         for c in contacts:
-            if c["first_name"] == contact[13] and c.get("is_company", False) is True:
+            if c["first_name"].strip() == contact[13].strip() and c.get("is_company", False) is True:
                 company_found = True
                 break
 
         # Create company if not existing
         if not company_found:
-            logging.info("Creating company: " + get_json_payload_add_company(contact[13]))
+            logging.info("Creating company: " + get_json_payload_add_company(contact[13].strip()))
             r = requests.post(settings.redmine_url_contacts, headers=json_request_header,
-                              data=get_json_payload_add_company(contact[13]),
+                              data=get_json_payload_add_company(contact[13].strip()),
                               auth=(settings.redmine_user, settings.redmine_password))
 
             # Check request status and notify on errors
@@ -203,11 +203,11 @@ def process_company(contact):
                 if r.status_code == 422:
                     send_error_mail_and_log(settings.admin_mail_address,
                                             "Unprocessable Entity: " + get_json_payload_add_company(
-                                                contact[13]) + "\n" + r.text, False)
+                                                contact[13].strip()) + "\n" + r.text, False)
                 else:
                     send_error_mail_and_log(settings.admin_mail_address,
                                             "Could not create or update contact: " + get_json_payload_add_company(
-                                                contact[13]) + "\n" + r.text, False)
+                                                contact[13].strip()) + "\n" + r.text, False)
 
 
 def sanitize_contact(contact):
