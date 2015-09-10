@@ -9,11 +9,14 @@ from mail import send_error_mail_and_log
 
 
 # Get all OpenXChange contacts
-def get_ox_contacts():
+def get_ox_contacts(diff_timestamp=None):
     token = get_token(settings.ox_login_name, settings.ox_login_pass)
 
     payload = {'session': str(token[0].get("session", "")), 'folder': settings.ox_contacts_folder,
-               'columns': settings.ox_contacts_columns}
+            'columns': settings.ox_contacts_columns, "action": "all"}
+    if diff_timestamp:
+        payload["action"] = "updates"
+        payload["timestamp"] = diff_timestamp
     r = requests.get(settings.ox_contacts_url, params=payload, cookies=token[1])
 
     if r.status_code != 200:
