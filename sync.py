@@ -28,7 +28,12 @@ def main(config_path):
     logging.basicConfig(level=settings.loglevel)
     lastrun = read_timestamp(settings.timestamp_file)
     ox_contacts = get_ox_contacts(lastrun)
-    write_contacts(ox_contacts)
+    if ox_contacts["data"]:
+        write_contacts(ox_contacts)
+    else:
+        # no changes since last sync attempt
+        # no need to write anything to redmine
+        pass
     save_timestamp(settings.timestamp_file, ox_contacts["timestamp"])
 
 
