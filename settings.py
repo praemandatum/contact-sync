@@ -4,6 +4,7 @@
 import ConfigParser
 
 loglevel = None
+timestamp_file = None
 smtp_address = None
 smtp_port = None
 smtp_user = None
@@ -36,6 +37,8 @@ def load_settings(filename):
     # Global
     global loglevel
     loglevel = config.getint('GLOBAL', 'Loglevel')
+    global timestamp_path
+    timestamp_file = config.get('GLOBAL', 'TimestampFile')
 
     # Mail
     global smtp_address

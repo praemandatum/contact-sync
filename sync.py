@@ -2,18 +2,39 @@
 # coding: utf-8
 
 import logging
+import pickle
 
 import settings
 from ox import get_ox_contacts
 from redmine import write_contacts
 from settings import load_settings
 
+"""Reads the timestamp (seconds since epoc) of the last sync."""
+def read_timestamp(path):
+    try:
+        with open(path, "r") as f:
+            lastrun = pickle.load(f)
+    except IOError:
+        lastrun = 0
+    return lastrun
+
+def save_timestamp(path, lastrun):
+    with open(path, "w") as f:
+        pickle.dump(lastrun, f)
+
 
 def main(config_path):
     load_settings(config_path)
     logging.basicConfig(level=settings.loglevel)
-    ox_contacts = get_ox_contacts()
-    write_contacts(ox_contacts)
+    lastrun = read_timestamp(settings.timestamp_file)
+    ox_contacts = get_ox_contacts(lastrun)
+    if ox_contacts["data"]:
+        write_contacts(ox_contacts)
+    else:
+        # no changes since last sync attempt
+        # no need to write anything to redmine
+        pass
+    save_timestamp(settings.timestamp_file, ox_contacts["timestamp"])
 
 
 if __name__ == '__main__':
