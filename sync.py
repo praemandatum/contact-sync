@@ -14,7 +14,10 @@ def read_timestamp(path):
     try:
         with open(path, "r") as f:
             lastrun = pickle.load(f)
-    except IOError:
+    except IOError as e:
+        # this should only occur on the first run of this script
+        # if the pickled timestamp is not present yet
+        logging.info("Failed to read timestamp. " + e.args[1])
         lastrun = 0
     return lastrun
 
