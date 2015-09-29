@@ -37,7 +37,7 @@ def load_settings(filename):
     # Global
     global loglevel
     loglevel = config.getint('GLOBAL', 'Loglevel')
-    global timestamp_path
+    global timestamp_file
     timestamp_file = config.get('GLOBAL', 'TimestampFile')
 
     # Mail
