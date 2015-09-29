@@ -14,7 +14,7 @@ def get_ox_contacts(diff_timestamp=None):
 
     payload = {'session': str(token[0].get("session", "")), 'folder': settings.ox_contacts_folder,
             'columns': settings.ox_contacts_columns, "action": "all"}
-    if diff_timestamp:
+    if diff_timestamp is None:
         payload["action"] = "updates"
         payload["timestamp"] = diff_timestamp
     r = requests.get(settings.ox_contacts_url, params=payload, cookies=token[1])
