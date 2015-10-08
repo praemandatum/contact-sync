@@ -3,21 +3,20 @@
 
 import logging
 import pickle
+import optparse
+import ConfigParser
 
-import settings
-from ox import get_ox_contacts
-from redmine import write_contacts
-from settings import load_settings
+import syncer
 
-"""Reads the timestamp (seconds since epoc) of the last sync."""
 def read_timestamp(path):
+    """Reads the timestamp (seconds since epoc) of the last sync."""
     try:
         with open(path, "r") as f:
             lastrun = pickle.load(f)
     except IOError as e:
         # this should only occur on the first run of this script
         # if the pickled timestamp is not present yet
-        logging.info("Failed to read timestamp. " + e.args[1])
+        logging.error("Failed to read timestamp. " + e.args[1])
         lastrun = 0
     return lastrun
 
@@ -25,27 +24,49 @@ def save_timestamp(path, lastrun):
     with open(path, "w") as f:
         pickle.dump(lastrun, f)
 
+def main(args):
+    try:
+        config = ConfigParser.ConfigParser()
+        config.sections()
+        config.readfp(args.config)
+        args.config.close()
+        logging.basicConfig(level=config.getint('GLOBAL', 'Loglevel'))
+        if config.getboolean("REDMINE", "CRMLight"):
+            cls = syncer.ContactSyncerForLight
+        else:
+            cls = syncer.ContactSyncer
+        sync = cls(
+            ox_base=config.get('OX', 'URL'),
+            ox_user=config.get('OX', 'User'),
+            ox_password=config.get('OX', 'Password'),
+            ox_folder=config.get('OX', 'Contacts_folder'),
+            ox_columns=[c for c in ",".join([key[1] for key in config.items('OX_CONTACTS_COLUMNS')]).split(",")],
+            redmine_base=config.get('REDMINE', 'URL'),
+            redmine_key=config.get('REDMINE', 'Key'),
+            redmine_project=config.get('REDMINE', 'Project'),
+            redmine_cf_id=config.get('REDMINE', 'ID_field_id'),
+            redmine_cf_uid=config.get('REDMINE', 'UID_field_id'),
+            redmine_cf_oxurl=config.get('REDMINE', 'OXURL_field_id')
+        )
+        sync.no_act = args.no_act
+        lastrun = read_timestamp(config.get('GLOBAL', 'TimestampFile'))
+        timestamp = sync.sync(lastrun)
+        if timestamp != 0:
+            save_timestamp(config.get('GLOBAL', 'TimestampFile'), timestamp)
+    except Exception as e:
+        send_error_mail_and_log(config.get("MAIL", "AdminMail"), str(e), True)
 
-def main(config_path):
-    load_settings(config_path)
-    logging.basicConfig(level=settings.loglevel)
-    lastrun = read_timestamp(settings.timestamp_file)
-    ox_contacts = get_ox_contacts(lastrun)
-    if ox_contacts["data"]:
-        write_contacts(ox_contacts)
-    else:
-        # no changes since last sync attempt
-        # no need to write anything to redmine
-        pass
-    save_timestamp(settings.timestamp_file, ox_contacts["timestamp"])
 
 
 if __name__ == '__main__':
     import sys
+    import argparse
 
-    if len(sys.argv) == 2:
-        main(str(sys.argv[1]))
-    elif len(sys.argv) > 2:
-        print 'Error: Need at most one argument (path to config file)'
-    else:
-        main('config.ini')
+    parser = argparse.ArgumentParser(description='Sync OX contacts with redmine.')
+    parser.add_argument('-c', '--config', dest='config', default='config.ini',
+        type=argparse.FileType("r"), help='path to config file')
+    parser.add_argument('-n', '--no-act', dest='no_act', action='store_true',
+        help='do not actually sync')
+    args = parser.parse_args()
+
+    main(args)

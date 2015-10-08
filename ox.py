@@ -3,6 +3,7 @@
 
 import requests
 import json
+import logging
 
 import settings
 from mail import send_error_mail_and_log
@@ -14,7 +15,8 @@ def get_ox_contacts(diff_timestamp=None):
 
     payload = {'session': str(token[0].get("session", "")), 'folder': settings.ox_contacts_folder,
             'columns': settings.ox_contacts_columns, "action": "all"}
-    if diff_timestamp is None:
+    if diff_timestamp is not None:
+        logging.info("Fetching updates from OX")
         payload["action"] = "updates"
         payload["timestamp"] = diff_timestamp
     r = requests.get(settings.ox_contacts_url, params=payload, cookies=token[1])
@@ -22,6 +24,7 @@ def get_ox_contacts(diff_timestamp=None):
     if r.status_code != 200:
         send_error_mail_and_log(settings.admin_mail_address, "Could not get OX contacts!\n" + r.text, True)
 
+    logging.debug(r.text)
     return json.loads(r.text)
 
 

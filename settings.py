@@ -3,39 +3,13 @@
 
 import ConfigParser
 
-loglevel = None
-timestamp_file = None
-smtp_address = None
-smtp_port = None
-smtp_user = None
-smtp_password = None
-smtp_sender = None
-admin_mail_address = None
-ox_login_name = None
-ox_login_pass = None
-ox_login_url = None
-ox_base_url = None
-ox_contacts_url = None
-ox_contacts_folder = None
-ox_contacts_columns = None
-redmine_user = None
-redmine_password = None
-redmine_project = None
-redmine_url_contacts = None
-redmine_url_contacts_update = None
-name_ox_uid = None
-name_ox_website = None
-uid_field_id = None
-ox_website_field_id = None
-
-
 def load_settings(filename):
     config = ConfigParser.ConfigParser()
     config.sections()
-    config.read(filename)
+    config.readfp(filename)
+    filename.close()
 
     # Global
-    global loglevel
     loglevel = config.getint('GLOBAL', 'Loglevel')
     global timestamp_file
     timestamp_file = config.get('GLOBAL', 'TimestampFile')
@@ -66,14 +40,8 @@ def load_settings(filename):
     global ox_login_pass
     ox_login_pass = config.get('OX', 'Password')
 
-    global ox_login_url
-    ox_login_url = config.get('OX', 'Login_URL')
-
     global ox_base_url
     ox_base_url = config.get('OX', 'Base_URL')
-
-    global ox_contacts_url
-    ox_contacts_url = config.get('OX', 'Contacts_URL')
 
     global ox_contacts_folder
     ox_contacts_folder = config.get('OX', 'Contacts_folder')
@@ -95,11 +63,9 @@ def load_settings(filename):
     global redmine_project
     redmine_project = config.get('REDMINE', 'Project')
 
-    global redmine_url_contacts
-    redmine_url_contacts = config.get('REDMINE', 'Contacts_URL')
+    global redmine_url
+    redmine_url = config.get('REDMINE', 'Contacts_URL')
 
-    global redmine_url_contacts_update
-    redmine_url_contacts_update = config.get('REDMINE', 'Contacts_update_URL')
 
     global name_ox_uid
     name_ox_uid = config.get('REDMINE', 'Name_OX_UID')
