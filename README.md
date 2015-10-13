@@ -20,6 +20,7 @@ Errors messages are send to a given e-mail address.
 * json
 * smtplib
 * ConfigParser
+* redmine (install with `pip install python-redmine`)
 
 ### Configuration
 
@@ -27,6 +28,7 @@ Configuration is done in `config.ini`
 
 ### Usage
 
-`./sync.py [CONFIG]`
+See
+
+`./sync.py -h`
  
- If no `[CONFIG]` file is given, `config.ini` will be used.
