@@ -53,6 +53,7 @@ class ContactSyncer(object):
             if red_contact is None:
                 # no contact with this uid in redmine
                 # create new one
+                logging.debug("OX contact with id {} and uid {} not found. Create.".format(ox_contact.get(ox.ID), ox_contact.get(ox.UID)))
                 num_created += 1
                 red_contact = redmine.contact.new()
             self.__adopt_contact(red_contact, ox_contact)
@@ -129,10 +130,12 @@ class ContactSyncer(object):
         ]
 
     def _get_id(self, red_contact):
-        return red_contact.custom_fields.get(self.id_field_id).value
+        field = red_contact.custom_fields.get(self.id_field_id)
+        return field.value if field is not None and field != "" else None
 
     def _get_uid(self, red_contact):
-        return red_contact.custom_fields.get(self.uid_field_id).value
+        field = red_contact.custom_fields.get(self.uid_field_id)
+        return field.value if field is not None and field != "" else None
 
     def __build_index(self, contacts):
         index = dict()
@@ -143,14 +146,27 @@ class ContactSyncer(object):
                 company_set.add(contact.company.strip())
             except ResourceAttrError as e:
                 pass
-            try:
-                uid = self._get_uid(contact)
-                oxid = self._get_id(contact)
-            except Exception:
+            uid = self._get_uid(contact)
+            if uid is None:
                 # Has no uid custom field, probably not created by sync
+                logging.debug("Redmine contact {} has no uid.".format(contact.id))
                 continue
             index[uid] = contact
-            index_oxid[int(oxid)] = contact
+            oxid = self._get_id(contact)
+            if oxid is None:
+                # Contacts synced by an older version of this script might not have the id set
+                logging.debug("Redmine contact {} has no oxid.".format(contact.id))
+            elif isinstance(oxid, int) and oxid is 0:
+                # redmine may use 0 as default for a unset customfield
+                # ignore these
+                pass
+            else:
+                try:
+                    oxid = int(oxid)
+                except ValueError as e:
+                    logging.debug("Non-integer oxid {} for contact {}".format(oxid, contact.id))
+                else:
+                    index_oxid[oxid] = contact
         return (index, index_oxid, company_set)
 
 

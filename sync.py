@@ -36,6 +36,7 @@ def main(args):
             cls = syncer.ContactSyncerForLight
         else:
             cls = syncer.ContactSyncer
+        logging.debug("Use syncer " + str(cls))
         sync = cls(
             ox_base=config.get('OX', 'URL'),
             ox_user=config.get('OX', 'User'),
@@ -45,9 +46,9 @@ def main(args):
             redmine_base=config.get('REDMINE', 'URL'),
             redmine_key=config.get('REDMINE', 'Key'),
             redmine_project=config.get('REDMINE', 'Project'),
-            redmine_cf_id=config.get('REDMINE', 'ID_field_id'),
-            redmine_cf_uid=config.get('REDMINE', 'UID_field_id'),
-            redmine_cf_oxurl=config.get('REDMINE', 'OXURL_field_id')
+            redmine_cf_id=config.getint('REDMINE', 'ID_field_id'),
+            redmine_cf_uid=config.getint('REDMINE', 'UID_field_id'),
+            redmine_cf_oxurl=config.getint('REDMINE', 'OXURL_field_id')
         )
         sync.no_act = args.no_act
         lastrun = read_timestamp(config.get('GLOBAL', 'TimestampFile'))
