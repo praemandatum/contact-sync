@@ -47,11 +47,13 @@ class ContactSyncer(object):
         contacts = redmine.contact.all()
         index, index_oxid, company_set = self.__build_index(contacts)
         logging.debug("Add or modify {} contacts".format(len(ox_contacts.created)))
+        num_created = 0
         for ox_contact in ox_contacts.created:
             red_contact = index.get(ox_contact.get(ox.UID))
             if red_contact is None:
                 # no contact with this uid in redmine
                 # create new one
+                num_created += 1
                 red_contact = redmine.contact.new()
             self.__adopt_contact(red_contact, ox_contact)
             # create a new contact for the company if necessary
@@ -70,6 +72,7 @@ class ContactSyncer(object):
                     )
             if not self.no_act:
                 red_contact.save()
+
         logging.debug("Delete {} contacts".format(len(ox_contacts.deleted)))
         for del_id in ox_contacts.deleted:
             red_contact = index_oxid.get(del_id)
@@ -78,6 +81,8 @@ class ContactSyncer(object):
                     redmine.contact.delete(red_contact.id)
             else:
                 logging.debug("Contact {} should be deleted but could not be found.".format(del_id))
+
+        logging.info("{} contacts actually were created.".format(num_created))
 
 
     def __adopt_contact(self, red_contact, ox_contact):
