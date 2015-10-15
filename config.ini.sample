@@ -18,11 +18,11 @@ Project = Vertrieb
 URL = https://redmine.prae.me
 # Set this to true if you use the free, light version
 # of the CRM Redmine plugin
-CRMLight = true
+CRMLight = false
 
 # ID of the contact custom field "uid", ID given by Redmine,
 # get this with a GET request on a contact.
-ID_field_id = 10
+ID_field_id = 23
 UID_field_id = 11
 OXURL_field_id = 12
 
