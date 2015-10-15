@@ -5,20 +5,23 @@ import logging
 import smtplib
 import sys
 
-import settings
 
-
-def send_error_mail_and_log(recipient, error_message, exit_on_error):
+def send_error_mail_and_log(config, recipient, error_message, exit_on_error):
     logging.error(error_message)
     try:
-        smtp = smtplib.SMTP(settings.smtp_address, settings.smtp_port)
+        smtp = smtplib.SMTP(config.get("MAIL", "Server"), config.get("MAIL", "Port"))
         smtp.starttls()
-        smtp.login(settings.smtp_user, settings.smtp_password)
-        message = ("From: OX Sync <" + settings.smtp_sender + ">\n" +
-                   "To: <" + recipient + ">\n" +
-                   "Subject: OX Sync error!" + "\n" +
-                   error_message)
-        smtp.sendmail(settings.smtp_sender, recipient, message)
+        smtp.login(config.get("MAIL", "User"), config.get("MAIL", "Password"))
+        message = ("""From: OX Sync <{sender}>
+To: <{recipient}>
+Subject: OX Sync error!
+
+{message}
+""".format(
+            sender=config.get("MAIL", "Sender"),
+            recipient=recipient,
+            message=error_message))
+        smtp.sendmail(config.get("MAIL", "Sender"), recipient, message)
     except:
         logging.error("Could not send mail!")
 

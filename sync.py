@@ -56,7 +56,7 @@ def main(args):
         if timestamp != 0:
             save_timestamp(config.get('GLOBAL', 'TimestampFile'), timestamp)
     except Exception as e:
-        send_error_mail_and_log(config.get("MAIL", "AdminMail"), str(e), True)
+        send_error_mail_and_log(config, config.get("MAIL", "AdminMail"), str(e), True)
 
 
 
