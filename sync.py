@@ -53,7 +53,7 @@ def main(args):
         sync.no_act = args.no_act
         lastrun = read_timestamp(config.get('GLOBAL', 'TimestampFile'))
         timestamp = sync.sync(lastrun)
-        if timestamp != 0:
+        if timestamp != 0 and not sync.no_act:
             save_timestamp(config.get('GLOBAL', 'TimestampFile'), timestamp)
     except Exception as e:
         send_error_mail_and_log(config, config.get("MAIL", "AdminMail"), str(e), True)
