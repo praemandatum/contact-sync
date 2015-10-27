@@ -181,7 +181,13 @@ class ContactSyncerForLight(ContactSyncer):
         red_contact.website = uid
 
     def _get_id(self, redmine_contact):
-        return redmine_contact.skype_name
+        try:
+            return redmine_contact.skype_name
+        except ResourceAttrError:
+            return None
 
     def _get_uid(self, redmine_contact):
-        return redmine_contact.website
+        try:
+            return redmine_contact.website
+        except ResourceAttrError:
+            return None
