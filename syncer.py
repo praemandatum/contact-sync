@@ -89,6 +89,8 @@ class ContactSyncer(object):
     def __adopt_contact(self, red_contact, ox_contact):
         red_contact.project_id = self.redmine_project
         red_contact.first_name = ox_contact.get(ox.FIRST_NAME, "n.v.").strip() # fn is mandatory
+        if red_contact.first_name == "":
+            red_contact.first_name = "n.v."
         red_contact.last_name = ox_contact.get(ox.LAST_NAME, "").strip()
         red_contact.middle_name = ox_contact.get(ox.SECOND_NAME, "").strip()
         red_contact.phones = [p.strip() for p in [
