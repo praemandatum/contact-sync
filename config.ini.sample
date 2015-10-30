@@ -39,6 +39,7 @@ AdminMail = user@praemandatum.de
 # The contact field numbers can be found in the OpenXChange HTTP API documentation.
 # http://oxpedia.org/wiki/index.php?title=HTTP_API
 ox_uid = 223
+ox_title = 505
 ox_first_name = 501
 ox_last_name = 502
 ox_middle_name = 503
