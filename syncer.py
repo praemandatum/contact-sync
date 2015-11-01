@@ -75,7 +75,8 @@ class ContactSyncer(object):
                 try:
                     red_contact.save()
                 except Exception as e:
-                    logging.error("Failed to save OX contact {}: {}".format(ox_contact.get(ox.ID), str(e)))
+                    logging.exception("Failed to save OX contact %s: %s",
+                            ox_contact.get(ox.ID), str(ox_contact))
 
         logging.debug("Delete {} contacts".format(len(ox_contacts.deleted)))
         for del_id in ox_contacts.deleted:

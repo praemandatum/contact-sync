@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import logging
+import logging.handlers
 import pickle
 import optparse
 import ConfigParser
@@ -17,7 +18,7 @@ def read_timestamp(path):
     except IOError as e:
         # this should only occur on the first run of this script
         # if the pickled timestamp is not present yet
-        logging.error("Failed to read timestamp. " + e.args[1])
+        logging.warning("Failed to read timestamp. %s", e.args[1])
         lastrun = 0
     return lastrun
 
@@ -25,13 +26,27 @@ def save_timestamp(path, lastrun):
     with open(path, "w") as f:
         pickle.dump(lastrun, f)
 
+def setup_logging(config):
+    logging.basicConfig(level=config.getint('GLOBAL', 'Loglevel'))
+    logger = logging.getLogger()
+    smtp_handler = logging.handlers.SMTPHandler(
+        mailhost=(config.get("MAIL", "Server"), config.get("MAIL", "Port")),
+        fromaddr=config.get("MAIL", "Sender"),
+        toaddrs=config.get("MAIL", "AdminMail"),
+        subject="OX Sync error!",
+        credentials=(config.get("MAIL", "User"), config.get("MAIL", "Password")),
+        secure=()
+    )
+    smtp_handler.setLevel(logging.ERROR)
+    logger.addHandler(smtp_handler)
+
 def main(args):
     try:
         config = ConfigParser.ConfigParser()
         config.sections()
         config.readfp(args.config)
         args.config.close()
-        logging.basicConfig(level=config.getint('GLOBAL', 'Loglevel'))
+        setup_logging(config)
         if config.getboolean("REDMINE", "CRMLight"):
             cls = syncer.ContactSyncerForLight
         else:
@@ -56,7 +71,7 @@ def main(args):
         if timestamp != 0 and not sync.no_act:
             save_timestamp(config.get('GLOBAL', 'TimestampFile'), timestamp)
     except Exception as e:
-        send_error_mail_and_log(config, config.get("MAIL", "AdminMail"), str(e), True)
+        logging.exception(e)
 
 
 
