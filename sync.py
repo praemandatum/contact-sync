@@ -8,7 +8,6 @@ import optparse
 import ConfigParser
 
 import syncer
-from mail import send_error_mail_and_log
 
 def read_timestamp(path):
     """Reads the timestamp (seconds since epoc) of the last sync."""
