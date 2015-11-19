@@ -14,8 +14,8 @@ class OXSession(object):
         self.token = None
 
     def establish(self):
-        payload = {'name': self.__username, 'password': self.__password}
-        r = requests.post(urljoin(self.baseUrl, LOGIN_PATH), params=payload)
+        data = {'name': self.__username, 'password': self.__password}
+        r = requests.post(urljoin(self.baseUrl, LOGIN_PATH), data=data)
         if r.status_code != 200:
             raise Exception("Could not get OX login token!")
 
