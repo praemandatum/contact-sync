@@ -38,8 +38,12 @@ class ContactSyncer(object):
     def __get_ox_contacts(self, since):
         session = ox.session.OXSession(self.ox_base, self.ox_user, self.__ox_password)
         session.establish()
-        loader = ox.loader.OXContactLoader(session, self.ox_folder, self.ox_columns)
-        return loader.loadUpdates(since)
+        try:
+            loader = ox.loader.OXContactLoader(session, self.ox_folder, self.ox_columns)
+            contacts = loader.loadUpdates(since)
+        finally:
+            session.logout()
+        return contacts
 
     def __write_contact_updates(self, ox_contacts):
         logging.debug("Fetch contacts from redmine")

@@ -3,6 +3,7 @@ import json
 from urlparse import urljoin
 
 LOGIN_PATH = "/ajax/login?action=login"
+LOGOUT_PATH = "/ajax/login?action=logout"
 
 class OXSession(object):
 
@@ -24,4 +25,11 @@ class OXSession(object):
         if self.token is None:
             raise Exception("Didn't receive session!\n" + r.text)
         self.cookie = r.cookies
+
+
+    def logout(self):
+        payload = {'session': self.token,}
+        r = requests.get(urljoin(self.baseUrl, LOGOUT_PATH), params=payload, cookies=self.cookie)
+        if r.status_code != 200:
+            raise Exception("OX logout failed!\n" + r.text)
 
