@@ -68,13 +68,15 @@ class ContactSyncer(object):
                 company = ""
             if company is not "":
                 company = company.strip()
-                if company not in company_set and self.no_act is False:
+                if company not in company_set:
                     logging.debug(u"Create company {}.".format(company))
-                    redmine.contact.create(
-                        first_name=company,
-                        is_company=True,
-                        project_id=self.redmine_project
-                    )
+                    if self.no_act is False:
+                        redmine.contact.create(
+                            first_name=company,
+                            is_company=True,
+                            project_id=self.redmine_project
+                        )
+                    company_set.add(company)
             if not self.no_act:
                 try:
                     red_contact.save()
