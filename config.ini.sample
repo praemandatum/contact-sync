@@ -34,28 +34,3 @@ Password = password
 Sender = user@praemandatum.de
 AdminMail = user@praemandatum.de
 
-[OX_CONTACTS_COLUMNS]
-# All values are combined into the OX contact request.
-# The contact field numbers can be found in the OpenXChange HTTP API documentation.
-# http://oxpedia.org/wiki/index.php?title=HTTP_API
-ox_uid = 223
-ox_title = 505
-ox_first_name = 501
-ox_last_name = 502
-ox_middle_name = 503
-ox_phone = 542
-ox_email = 555,556,557
-ox_street = 523
-ox_postal_code = 525
-ox_city = 526
-ox_state = 527
-ox_country = 528
-ox_company = 569
-ox_userfield01 = 571
-ox_userfield02 = 572
-ox_note = 518
-ox_profession = 514
-ox_userfield03 = 573
-ox_userfield04 = 574
-ox_website = 558
-ox_id = 1

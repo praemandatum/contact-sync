@@ -35,7 +35,7 @@ class OXContactLoader(object):
         return {
                 'session': self.__session.token,
                 'folder': self.__folder,
-                'columns': ",".join(self.__columns),
+                'columns': ",".join([str(c) for c in self.__columns]),
                 "action": action
                 }
 

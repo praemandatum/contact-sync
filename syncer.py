@@ -9,13 +9,42 @@ import ox
 import ox.session
 import ox.loader
 
+OX_COLUMNS_MANDATORY = set([
+    ox.ID,
+    ox.UID,
+    ox.TITLE,
+    ox.FIRST_NAME,
+    ox.LAST_NAME,
+    ox.SECOND_NAME,
+    ox.TELEPHONE_BUSINESS1,
+    ox.EMAIL1,
+    ox.EMAIL2,
+    ox.EMAIL3,
+    ox.STREET_BUSINESS,
+    ox.POSTAL_CODE_BUSINESS,
+    ox.CITY_BUSINESS,
+    ox.STATE_BUSINESS,
+    ox.COUNTRY_BUSINESS,
+    ox.COMPANY,
+    ox.USERFIELD01,
+    ox.USERFIELD02,
+    ox.NOTE,
+    ox.PROFESSION,
+    ox.USERFIELD03,
+    ox.USERFIELD04,
+    ox.URL,
+])
+
 class ContactSyncer(object):
     def __init__(self, **kwargs):
         self.ox_base = kwargs.get("ox_base")
         self.ox_user = kwargs.get("ox_user")
         self.__ox_password = kwargs.get("ox_password")
         self.ox_folder = kwargs.get("ox_folder")
-        self.ox_columns = kwargs.get("ox_columns")
+        ox_columns_extra = kwargs.get("ox_columns_extra", [])
+        self.ox_columns = set()
+        self.ox_columns.update(OX_COLUMNS_MANDATORY)
+        self.ox_columns.update(ox_columns_extra)
         self.redmine_base = kwargs.get("redmine_base")
         self.__redmine_key = kwargs.get("redmine_key")
         self.redmine_project = kwargs.get("redmine_project")

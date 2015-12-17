@@ -56,7 +56,6 @@ def main(args):
             ox_user=config.get('OX', 'User'),
             ox_password=config.get('OX', 'Password'),
             ox_folder=config.get('OX', 'Contacts_folder'),
-            ox_columns=[c for c in ",".join([key[1] for key in config.items('OX_CONTACTS_COLUMNS')]).split(",")],
             redmine_base=config.get('REDMINE', 'URL'),
             redmine_key=config.get('REDMINE', 'Key'),
             redmine_project=config.get('REDMINE', 'Project'),
