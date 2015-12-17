@@ -29,7 +29,7 @@ OX_COLUMNS_MANDATORY = set([
     ox.USERFIELD01,
     ox.USERFIELD02,
     ox.NOTE,
-    ox.PROFESSION,
+    ox.POSITION,
     ox.USERFIELD03,
     ox.USERFIELD04,
     ox.URL,
@@ -156,7 +156,7 @@ class ContactSyncer(object):
             ox_contact.get(ox.USERFIELD02),
             ox_contact.get(ox.NOTE)
         ] if i is not None])
-        red_contact.job_title = ox_contact.get(ox.PROFESSION, "").strip()
+        red_contact.job_title = ox_contact.get(ox.POSITION, "").strip()
         if red_contact.is_new:
             # only new to make this reentrant to keep redmine tags
             red_contact.tag_list = [t.strip() for t in [
