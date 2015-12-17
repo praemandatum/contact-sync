@@ -65,7 +65,10 @@ def main(args):
         )
         sync.no_act = args.no_act
         lastrun = read_timestamp(config.get('GLOBAL', 'TimestampFile'))
-        timestamp = sync.sync(lastrun)
+        if args.force:
+            timestamp = sync.sync()
+        else:
+            timestamp = sync.sync(lastrun)
         if timestamp != 0 and not sync.no_act:
             save_timestamp(config.get('GLOBAL', 'TimestampFile'), timestamp)
     except Exception as e:
@@ -82,6 +85,8 @@ if __name__ == '__main__':
         type=argparse.FileType("r"), help='path to config file')
     parser.add_argument('-n', '--no-act', dest='no_act', action='store_true',
         help='do not actually sync')
+    parser.add_argument('-f', '--force', dest='force', action='store_true',
+        help='ignore timestamp and request all changes since epoc')
     args = parser.parse_args()
 
     main(args)
