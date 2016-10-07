@@ -15,35 +15,13 @@ class OX(object):
         self.contacts = Contacts(self)
 
 
-    def list(self, folder, columns):
-        """Load all contacts."""
-        payload = self.__build_request("all", folder, columns)
-        res = self.__request(payload)
-        return res.get("data")
-
-    def list_since(self, since, folder, columns):
-        """Load contacts that changed since given timestamp."""
-        payload = self.__build_request("updates", folder, columns)
-        payload["timestamp"] = since
-        raw = self.__request(payload)
-        return response.UpdatesResponse.parse(raw, columns)
-
-
-    def create(self, folder, columns):
-        """Create a contact."""
-
-
-    def __build_request(self, action, folder, columns):
-        return {
-                'session': self.__session.token,
-                'folder': folder,
-                'columns': ",".join([str(c) for c in columns]),
-                "action": action
-                }
-
-    def request(self, method, url, payload):
-        r = getattr(requests, method)(urljoin(self.__session.baseUrl, url), params=payload,
-                cookies=self.__session.cookie)
+    def request(self, method, url, payload, params={}, body=None):
+        params["session"] = self.__session.token
+        kwargs = dict()
+        if body:
+            kwargs["data"] = body
+        r = getattr(requests, method)(urljoin(self.__session.baseUrl, url), params=params,
+                cookies=self.__session.cookie, **kwargs)
 
         if r.status_code != 200:
             raise Exception("Could not get OX contacts!\n" + r.text)

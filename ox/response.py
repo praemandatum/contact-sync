@@ -1,8 +1,24 @@
 import logging
 
-class UpdatesResponse(object):
+class Response(object):
+    """Abstract response."""
 
-    def __init__(self, timestamp, created=[], modified=[], deleted=[]):
+    def __init__(self, raw):
+        self.error_categories = raw.get("categories", [])
+        if type(self.categories) is str:
+            self.categories = [self.categories]
+        self.error_code = raw.get("code", "")
+        self.error_msg = raw.get("error", "")
+        self.error_desc = raw.get("error_desc", "")
+        self.error_id = raw.get("error_id", "")
+        self.timestamp = raw.get("timestamp", None)
+
+
+
+class UpdatesResponse(Response):
+
+    def __init__(self, raw):
+        super(Response, self).__init__(raw)
         self.created = created
         self.modified = modified
         self.deleted = deleted

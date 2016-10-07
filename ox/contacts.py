@@ -12,22 +12,28 @@ class Contacts(object):
     def list(self, folder, columns):
         """Load all contacts."""
         # TODO fix payload building
-        payload = self.__build_request("all", folder, columns)
+        payload = self.__build_list_params(folder, columns)
         res = self.ox.request("get", "/contacts?action=all", payload)
         return res.get("data")
 
     def list_since(self, since, folder, columns):
         """Load contacts that changed since given timestamp."""
-        payload = self.__build_request("updates", folder, columns)
+        payload = self.__build_list_params(folder, columns)
         payload["timestamp"] = since
-        raw = self.ox.request("get", "/contacts?action=all", payload)
+        raw = self.ox.request("get", "/contacts?action=updates", payload)
         return response.UpdatesResponse.parse(raw, columns)
+
+
+    def __build_list_params(self, folder, columns):
+        return {
+                'folder': folder,
+                'columns': ",".join([str(c) for c in columns]),
+                }
 
 
     def create(self, folder, contact_data):
         """Create a contact."""
         payload = {
-            'session': self.ox.__session.token,
             'body': contact_data,
         }
         r = self.ox.request("put", "/contacts?action=new", payload)
@@ -38,14 +44,44 @@ class Contacts(object):
         return json.loads(r.text)
 
 
-    def __build_request(self, action, folder, columns):
-        return {
-                'session': self.ox.__session.token,
-                'folder': folder,
-                'columns': ",".join([str(c) for c in columns]),
-                "action": action
-                }
+    def get(self, folder, id):
+        """Get an individual contact by id."""
+        params = {
+            'folder': folder,
+            'id': id,
+        }
+        r = self.ox.request("put", "/contacts?action=new", params=params)
 
+
+    def filter(self, columns, search_term):
+        """
+        Filter contacts by search criteria.
+        See https://documentation.open-xchange.com/latest/middleware/http_api/5_advanced_search.html
+        """
+        params = {
+            'columns': ",".join([str(c) for c in columns]),
+        }
+        r = self.ox.request("put", "/contacts?action=advancedSearch", params=params, body=search_term)
+
+
+    def get_by_uuid(self, uuid):
+        """Get an individual contact by UUID."""
+        params = {
+            'folder': folder,
+            'id': id,
+        }
+        self.filter([
+        r = self.ox.request("put", "/contacts?action=new", params=params)
+
+
+    def update(self, folder, id, contact):
+        """Update an individual contact by id."""
+        params = {
+            'folder': folder,
+            'id': id,
+            'timestamp': timestamp,
+        }
+        r = self.ox.request("put", "/contacts?action=update", params=params, body=contact)
 
 
     def fromRedmineContact(self, red_contact):
